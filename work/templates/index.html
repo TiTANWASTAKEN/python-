@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File List Display - Airport Style</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #282c34;
+            color: #61dafb;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #61dafb;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            font-size: 20px;
+            padding: 10px;
+            border-bottom: 1px solid #61dafb;
+            transition: background-color 0.3s;
+        }
+
+        li:hover {
+            background-color: #61dafb;
+            color: #282c34;
+        }
+
+        .progress-bar {
+            width: 80%;
+            margin: 20px auto;
+            padding: 10px;
+            border: 1px solid #61dafb;
+            background-color: #282c34;
+        }
+
+        .progress {
+            width: 0;
+            height: 20px;
+            background-color: #61dafb;
+            transition: width 0.3s;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to refresh the page every 5 minutes
+            function refreshPage() {
+                location.reload();
+            }
+
+            // Set the interval for refreshing (300,000 milliseconds = 5 minutes)
+            setInterval(refreshPage, 300000);
+
+            // Function to update the progress bar
+            function updateProgressBar(fraction) {
+                const progressBar = document.getElementById('progress');
+                const maxWidth = document.querySelector('.progress-bar').clientWidth;
+                const newWidth = maxWidth * fraction;
+                progressBar.style.width = newWidth + 'px';
+
+                // Display the calculated percentage
+                const percentage = (fraction * 100).toFixed(2);
+                document.getElementById('percentage').innerText = `Progress: ${percentage}%`;
+            }
+
+            // Get the number of files in Folder 1 and Folder 2
+            const totalFilesFolder1 = {{ files_folder1|length }};
+            const totalFilesFolder2 = {{ files_folder2|length }};
+
+            // Calculate the progress fraction based on the number of files in Folder 2
+            const progressFraction = totalFilesFolder2 / totalFilesFolder1;
+
+            // Update the progress bar
+            updateProgressBar(progressFraction);
+        });
+    </script>
+</head>
+<body>
+    <h1>Files in Folder 1</h1>
+    <ul>
+        {% for file in files_folder1 %}
+            <li>{{ file }}</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Files in Folder 2</h1>
+    <ul>
+        {% for file in files_folder2 %}
+            <li>{{ file }}</li>
+        {% endfor %}
+    </ul>
+
+    <div class="progress-bar">
+        <div id="progress" class="progress"></div>
+    </div>
+
+    <div id="percentage" style="color: #61dafb;"></div>
+</body>
+</html>
